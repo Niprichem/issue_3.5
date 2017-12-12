@@ -1,6 +1,7 @@
 import os
 import math
 
+import osa
 import requests
 from xml.etree.ElementTree import fromstring
 
@@ -25,81 +26,18 @@ def get_miles_from_file(file_name):
 
 
 def get_converted_temperature(temperature, from_unit, to_unit):
-    response = requests.post(
-        'http://www.webservicex.net/ConvertTemperature.asmx?WSDL',
-        headers={
-            'Content-Type': 'application/soap+xml; charset=utf-8',
-        },
-        data='''<?xml version="1.0" encoding="utf-8"?>
-            <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
-              <soap12:Body>
-                <ConvertTemp xmlns="http://www.webserviceX.NET/">
-                  <Temperature>{}</Temperature>
-                  <FromUnit>{}</FromUnit>
-                  <ToUnit>{}</ToUnit>
-                </ConvertTemp>
-              </soap12:Body>
-            </soap12:Envelope>'''.format(temperature, from_unit, to_unit)
-    )
-    return float(fromstring(response.text)[0][0][0].text)
+    client = osa.Client('http://www.webservicex.net/ConvertTemperature.asmx?WSDL')
+    return client.service.ConvertTemp(Temperature=temperature, FromUnit=from_unit, ToUnit=to_unit)
 
 
 def get_converted_currencies(from_unit, to_unit):
-    response = requests.post(
-        'http://www.webservicex.net/CurrencyConvertor.asmx?WSDL',
-        headers={
-            'Content-Type': 'application/soap+xml; charset=utf-8',
-        },
-        data='''<?xml version="1.0" encoding="utf-8"?>
-            <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
-              <soap12:Body>
-                <ConversionRate xmlns="http://www.webserviceX.NET/">
-                  <FromCurrency>{}</FromCurrency>
-                  <ToCurrency>{}</ToCurrency>
-                </ConversionRate>
-              </soap12:Body>
-            </soap12:Envelope>'''.format(from_unit, to_unit)
-    )
-    return float(fromstring(response.text)[0][0][0].text)
-
-
-def get_converted_lenght(from_unit, to_unit):
-    response = requests.post(
-        'http://www.webservicex.net/CurrencyConvertor.asmx?WSDL',
-        headers={
-            'Content-Type': 'application/soap+xml; charset=utf-8',
-        },
-        data='''<?xml version="1.0" encoding="utf-8"?>
-            <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
-              <soap12:Body>
-                <ConversionRate xmlns="http://www.webserviceX.NET/">
-                  <FromCurrency>{}</FromCurrency>
-                  <ToCurrency>{}</ToCurrency>
-                </ConversionRate>
-              </soap12:Body>
-            </soap12:Envelope>'''.format(from_unit, to_unit)
-    )
-    return float(fromstring(response.text)[0][0][0].text)
+    client = osa.Client('http://www.webservicex.net/CurrencyConvertor.asmx?WSDL')
+    return client.service.ConversionRate(FromCurrency=from_unit, ToCurrency=to_unit)
 
 
 def get_converted_kilometers(val, from_unit, to_unit):
-    response = requests.post(
-        'http://www.webservicex.net/length.asmx?WSDL',
-        headers={
-            'Content-Type': 'application/soap+xml; charset=utf-8',
-        },
-        data='''<?xml version="1.0" encoding="utf-8"?>
-            <soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
-              <soap12:Body>
-                <ChangeLengthUnit xmlns="http://www.webserviceX.NET/">
-                  <LengthValue>{}</LengthValue>
-                  <fromLengthUnit>{}</fromLengthUnit>
-                  <toLengthUnit>{}</toLengthUnit>
-                </ChangeLengthUnit>
-              </soap12:Body>
-            </soap12:Envelope>'''.format(val, from_unit, to_unit)
-    )
-    return float(fromstring(response.text)[0][0][0].text)
+    client = osa.Client('http://www.webservicex.net/length.asmx?WSDL')
+    return client.service.ChangeLengthUnit(LengthValue=val, fromLengthUnit=from_unit, toLengthUnit=to_unit)
 
 
 def main():
