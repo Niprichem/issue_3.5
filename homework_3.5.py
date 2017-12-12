@@ -2,8 +2,6 @@ import os
 import math
 
 import osa
-import requests
-from xml.etree.ElementTree import fromstring
 
 
 def get_temperature_from_file(file_name):
